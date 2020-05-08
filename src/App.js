@@ -1,25 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useContext, useEffect } from 'react';
 import './App.css';
+import BaseComponent from './components/BaseComponent';
+import { Context } from './Context';
+import { Router } from "@reach/router";
+import ReactNoSleep from 'react-no-sleep';
+
+// Pages:
+import Main from './pages/Main';
+import Butik from './pages/Butik';
 
 function App() {
+  const [state, dispatch] = useContext(Context);
+
+  useEffect(() => {
+    state.socket.emit("butiker", {}, (x) => {
+      dispatch({
+        type: "SET_BUTIKER",
+        payload: x
+      })
+    })
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ReactNoSleep>
+      <Router>
+        <Main path="/" default />
+        <Butik path="/:butikid" />
+      </Router>
+    </ReactNoSleep>
   );
 }
 
