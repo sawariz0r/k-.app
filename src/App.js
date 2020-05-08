@@ -3,7 +3,7 @@ import './App.css';
 import BaseComponent from './components/BaseComponent';
 import { Context } from './Context';
 import { Router } from "@reach/router";
-import ReactNoSleep from 'react-no-sleep';
+import NoSleep from "nosleep.js";
 
 // Pages:
 import Main from './pages/Main';
@@ -13,6 +13,8 @@ function App() {
   const [state, dispatch] = useContext(Context);
 
   useEffect(() => {
+    const keepAwake = new NoSleep();
+    keepAwake.enable();
     state.socket.emit("butiker", {}, (x) => {
       dispatch({
         type: "SET_BUTIKER",
@@ -22,12 +24,10 @@ function App() {
   }, [])
 
   return (
-    <ReactNoSleep>
       <Router>
         <Main path="/" default />
         <Butik path="/:butikid" />
       </Router>
-    </ReactNoSleep>
   );
 }
 
